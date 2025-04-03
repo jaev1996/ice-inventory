@@ -1,47 +1,51 @@
 import { useState } from 'react';
-import { IceProduct } from '../types/types';
+import { useInventory } from '../context/InventoryContext';
 
-interface SalesFormProps {
-  onAddSale: (sale: { productId: string; quantity: number; client: string; total: number }) => void;
-}
-
-const SalesForm = ({ onAddSale }: SalesFormProps) => {
+const SalesForm = () => {
   const [productId, setProductId] = useState('');
   const [quantity, setQuantity] = useState('');
   const [client, setClient] = useState('');
+  const [salePrice, setSalePrice] = useState('');
   
-  // En una app real, estos vendrían de una API
-  const products: IceProduct[] = [
-    { id: '1', name: 'Bolsa Pequeña', type: 'bag', quantity: 100, price: 10, capacity: 5 },
-    { id: '2', name: 'Bolsa Grande', type: 'bag', quantity: 50, price: 20, capacity: 10 },
-    { id: '3', name: 'Cesta Familiar', type: 'basket', quantity: 30, price: 50, capacity: 25 },
-  ];
+  const { products, updateProductQuantity, getProductById } = useInventory();
 
-  const selectedProduct = products.find(p => p.id === productId);
-  const total = selectedProduct ? selectedProduct.price * parseInt(quantity || '0') : 0;
+  const selectedProduct = getProductById(productId);
+  const referencePrice = selectedProduct ? selectedProduct.price : 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productId || !quantity || !client) return;
+    if (!productId || !quantity || !client || !salePrice) return;
     
-    onAddSale({
-      productId,
-      quantity: parseInt(quantity),
-      client,
-      total,
-    });
+    const product = getProductById(productId);
+    if (product && product.quantity >= parseInt(quantity)) {
+      const newQuantity = product.quantity - parseInt(quantity);
+      updateProductQuantity(productId, newQuantity);
+      
+      // Aquí podrías guardar el registro de venta cuando implementes esa parte
+      console.log('Venta registrada:', {
+        productId,
+        quantity: parseInt(quantity),
+        client,
+        price: parseFloat(salePrice),
+        date: new Date().toISOString()
+      });
+    } else {
+      alert('No hay suficiente stock para esta venta');
+      return;
+    }
     
     // Reset form
     setProductId('');
     setQuantity('');
     setClient('');
+    setSalePrice('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-4">Registrar Nueva Venta</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
           <select
@@ -53,7 +57,7 @@ const SalesForm = ({ onAddSale }: SalesFormProps) => {
             <option value="">Seleccionar producto</option>
             {products.map(product => (
               <option key={product.id} value={product.id}>
-                {product.name} (${product.price})
+                {product.name} (Ref: ${product.price})
               </option>
             ))}
           </select>
@@ -83,13 +87,27 @@ const SalesForm = ({ onAddSale }: SalesFormProps) => {
             required
           />
         </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Precio de venta</label>
+          <input
+            type="number"
+            value={salePrice}
+            onChange={(e) => setSalePrice(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            placeholder={`Ej: ${referencePrice}`}
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
       </div>
       
-      {selectedProduct && quantity && (
+      {selectedProduct && (
         <div className="mb-4 p-3 bg-gray-100 rounded-md">
-          <p className="font-medium">Total: ${total.toFixed(2)}</p>
+          <p className="font-medium">Stock actual: {selectedProduct.quantity} unidades</p>
           <p className="text-sm">
-            {quantity} {parseInt(quantity) === 1 ? 'unidad' : 'unidades'} de {selectedProduct.name}
+            Precio referencia: ${referencePrice.toFixed(2)}
           </p>
         </div>
       )}

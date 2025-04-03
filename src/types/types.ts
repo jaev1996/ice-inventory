@@ -1,12 +1,16 @@
 export interface IceProduct {
-    id: string;
-    name: string;
-    type: 'bag' | 'basket';
-    quantity: number;
-    price: number;
-    capacity: number; // en kg
-  }
-  
+  id: string;
+  name: string;
+  type: 'bag' | 'basket';
+  quantity: number;
+  price: number;
+}
+
+export interface InventoryState {
+  products: IceProduct[];
+}
+
+/*
   export interface ProductionRecord {
     id: string;
     date: string;
@@ -28,3 +32,4 @@ export interface IceProduct {
     production: ProductionRecord[];
     sales: SaleRecord[];
   }
+*/

@@ -1,0 +1,32 @@
+{
+    "products": [
+      {
+        "id": "1",
+        "name": "Bolsa de Hielo Pequeña",
+        "type": "bag",
+        "quantity": 100,
+        "price": 10
+      },
+      {
+        "id": "2",
+        "name": "Bolsa de Hielo Mediana",
+        "type": "bag",
+        "quantity": 75,
+        "price": 15
+      },
+      {
+        "id": "3",
+        "name": "Bolsa de Hielo Grande",
+        "type": "bag",
+        "quantity": 50,
+        "price": 20
+      },
+      {
+        "id": "4",
+        "name": "Cesta de Hielo",
+        "type": "basket",
+        "quantity": 30,
+        "price": 50
+      }
+    ]
+  }

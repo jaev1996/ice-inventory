@@ -1,29 +1,20 @@
 import { useState } from 'react';
-import { IceProduct } from '../types/types';
+import { useInventory } from '../context/InventoryContext';
 
-interface ProductionFormProps {
-  onAddProduction: (production: { productId: string; quantity: number }) => void;
-}
-
-const ProductionForm = ({ onAddProduction }: ProductionFormProps) => {
+const ProductionForm = () => {
   const [productId, setProductId] = useState('');
   const [quantity, setQuantity] = useState('');
-  
-  // En una app real, estos vendrían de una API
-  const products: IceProduct[] = [
-    { id: '1', name: 'Bolsa Pequeña', type: 'bag', quantity: 100, price: 10, capacity: 5 },
-    { id: '2', name: 'Bolsa Grande', type: 'bag', quantity: 50, price: 20, capacity: 10 },
-    { id: '3', name: 'Cesta Familiar', type: 'basket', quantity: 30, price: 50, capacity: 25 },
-  ];
+  const { products, updateProductQuantity } = useInventory();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId || !quantity) return;
     
-    onAddProduction({
-      productId,
-      quantity: parseInt(quantity),
-    });
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      const newQuantity = product.quantity + parseInt(quantity);
+      updateProductQuantity(productId, newQuantity);
+    }
     
     // Reset form
     setProductId('');
@@ -46,14 +37,14 @@ const ProductionForm = ({ onAddProduction }: ProductionFormProps) => {
             <option value="">Seleccionar producto</option>
             {products.map(product => (
               <option key={product.id} value={product.id}>
-                {product.name} ({product.type === 'bag' ? 'Bolsa' : 'Cesta'})
+                {product.name}
               </option>
             ))}
           </select>
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad a agregar</label>
           <input
             type="number"
             value={quantity}
