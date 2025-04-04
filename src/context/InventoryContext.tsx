@@ -4,6 +4,9 @@ import productsData from '../data/products.json';
 
 interface InventoryContextType {
   products: IceProduct[];
+  addProduct: (product: Omit<IceProduct, 'id'>) => void;
+  updateProduct: (id: string, updatedProduct: Partial<IceProduct>) => void;
+  deleteProduct: (id: string) => void;
   updateProductQuantity: (id: string, newQuantity: number) => void;
   getProductById: (id: string) => IceProduct | undefined;
 }
@@ -14,16 +17,32 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<IceProduct[]>(
     productsData.products.map(product => ({
       ...product,
-      type: product.type as "bag" | "basket",
+      type: product.type as "bag" | "basket", // Cast type to match IceProduct
     }))
   );
 
-  const updateProductQuantity = (id: string, newQuantity: number) => {
+  const addProduct = (product: Omit<IceProduct, 'id'>) => {
+    const newProduct: IceProduct = {
+      ...product,
+      id: Date.now().toString(), // ID simple basado en timestamp
+    };
+    setProducts(prevProducts => [...prevProducts, newProduct]);
+  };
+
+  const updateProduct = (id: string, updatedProduct: Partial<IceProduct>) => {
     setProducts(prevProducts =>
       prevProducts.map(product =>
-        product.id === id ? { ...product, quantity: newQuantity } : product
+        product.id === id ? { ...product, ...updatedProduct } : product
       )
     );
+  };
+
+  const deleteProduct = (id: string) => {
+    setProducts(prevProducts => prevProducts.filter(product => product.id !== id));
+  };
+
+  const updateProductQuantity = (id: string, newQuantity: number) => {
+    updateProduct(id, { quantity: newQuantity });
   };
 
   const getProductById = (id: string) => {
@@ -31,7 +50,16 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <InventoryContext.Provider value={{ products, updateProductQuantity, getProductById }}>
+    <InventoryContext.Provider 
+      value={{ 
+        products, 
+        addProduct, 
+        updateProduct, 
+        deleteProduct,
+        updateProductQuantity, 
+        getProductById 
+      }}
+    >
       {children}
     </InventoryContext.Provider>
   );

@@ -2,9 +2,11 @@ import { IceProduct } from '../types/types';
 
 interface InventoryCardProps {
   product: IceProduct;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-const InventoryCard = ({ product }: InventoryCardProps) => {
+const InventoryCard = ({ product, onEdit, onDelete }: InventoryCardProps) => {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
       <div className="flex justify-between items-start">
@@ -20,7 +22,7 @@ const InventoryCard = ({ product }: InventoryCardProps) => {
       
       <div className="mt-4 space-y-2">
         <p><span className="font-medium">Unidades:</span> {product.quantity}</p>
-        <p><span className="font-medium">Precio referencia:</span> ${product.price}</p>
+        <p><span className="font-medium">Precio referencia:</span> ${product.price.toFixed(2)}</p>
       </div>
       
       <div className="mt-4 pt-4 border-t border-gray-200">
@@ -43,6 +45,27 @@ const InventoryCard = ({ product }: InventoryCardProps) => {
               ? 'Stock medio' 
               : 'Stock bajo'}
         </p>
+      </div>
+      
+      <div className="mt-4 flex justify-end space-x-2">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+          className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+        >
+          Editar
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          className="text-red-600 hover:text-red-800 text-sm font-medium"
+        >
+          Eliminar
+        </button>
       </div>
     </div>
   );
