@@ -1,40 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useInventory } from '../context/InventoryContext';
+import { ProductionRecord } from '../types/types';
 
-const ProductionForm = () => {
+const ProductionForm = ({ onAddProduction }: { onAddProduction: (record: ProductionRecord) => void }) => {
   const [productId, setProductId] = useState('');
   const [quantity, setQuantity] = useState('');
-  const { products, updateProductQuantity } = useInventory();
+  const [productionDateTime, setProductionDateTime] = useState('');
+  const { products, getProductById } = useInventory();
+
+  useEffect(() => {
+    // Establecer fecha y hora actual al cargar
+    const now = new Date();
+    // Ajustar para que el input datetime-local funcione correctamente
+    const offset = now.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(now.getTime() - offset).toISOString().slice(0, 16);
+    setProductionDateTime(localISOTime);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productId || !quantity) return;
-    
-    const product = products.find(p => p.id === productId);
-    if (product) {
-      const newQuantity = product.quantity + parseInt(quantity);
-      updateProductQuantity(productId, newQuantity);
-    }
-    
-    // Reset form
+    if (!productId || !quantity || !productionDateTime) return;
+
+    const product = getProductById(productId);
+    if (!product) return;
+
+    const timestamp = new Date(productionDateTime).getTime();
+
+    const newRecord: ProductionRecord = {
+      id: Date.now().toString(),
+      date: new Date(productionDateTime).toISOString(),
+      productId: product.id,
+      productName: product.name,
+      quantity: parseInt(quantity),
+      timestamp
+    };
+
+    onAddProduction(newRecord);
+
+    // Reset form (excepto fecha/hora)
     setProductId('');
     setQuantity('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="text-xl font-semibold mb-4">Registrar Nueva Producción</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
+    <form onSubmit={handleSubmit} className="bg-white p-4 rounded-lg shadow mb-4">
+      <div className="flex flex-col md:flex-row gap-3 items-end">
+        <div className="flex-1 min-w-[120px]">
           <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
           <select
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-2 text-sm border border-gray-300 rounded-md"
             required
           >
-            <option value="">Seleccionar producto</option>
+            <option value="">Seleccionar...</option>
             {products.map(product => (
               <option key={product.id} value={product.id}>
                 {product.name}
@@ -42,27 +61,38 @@ const ProductionForm = () => {
             ))}
           </select>
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad a agregar</label>
+
+        <div className="w-24">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
           <input
             type="number"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ej: 10"
+            className="w-full p-2 text-sm border border-gray-300 rounded-md"
+            placeholder="0"
             min="1"
             required
           />
         </div>
+
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha/Hora</label>
+          <input
+            type="datetime-local"
+            value={productionDateTime}
+            onChange={(e) => setProductionDateTime(e.target.value)}
+            className="w-full p-2 text-sm border border-gray-300 rounded-md"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition-colors h-[42px]"
+        >
+          Registrar
+        </button>
       </div>
-      
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-      >
-        Registrar Producción
-      </button>
     </form>
   );
 };

@@ -6,7 +6,7 @@ const SalesForm = () => {
   const [quantity, setQuantity] = useState('');
   const [client, setClient] = useState('');
   const [salePrice, setSalePrice] = useState('');
-  
+
   const { products, updateProductQuantity, getProductById } = useInventory();
 
   const selectedProduct = getProductById(productId);
@@ -15,12 +15,12 @@ const SalesForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId || !quantity || !client || !salePrice) return;
-    
+
     const product = getProductById(productId);
     if (product && product.quantity >= parseInt(quantity)) {
       const newQuantity = product.quantity - parseInt(quantity);
       updateProductQuantity(productId, newQuantity);
-      
+
       // Aquí podrías guardar el registro de venta cuando implementes esa parte
       console.log('Venta registrada:', {
         productId,
@@ -33,7 +33,7 @@ const SalesForm = () => {
       alert('No hay suficiente stock para esta venta');
       return;
     }
-    
+
     // Reset form
     setProductId('');
     setQuantity('');
@@ -44,7 +44,7 @@ const SalesForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="text-xl font-semibold mb-4">Registrar Nueva Venta</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
@@ -62,7 +62,7 @@ const SalesForm = () => {
             ))}
           </select>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
           <input
@@ -75,7 +75,7 @@ const SalesForm = () => {
             required
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
           <input
@@ -87,7 +87,7 @@ const SalesForm = () => {
             required
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Precio de venta</label>
           <input
@@ -102,7 +102,7 @@ const SalesForm = () => {
           />
         </div>
       </div>
-      
+
       {selectedProduct && (
         <div className="mb-4 p-3 bg-gray-100 rounded-md">
           <p className="font-medium">Stock actual: {selectedProduct.quantity} unidades</p>
@@ -111,7 +111,7 @@ const SalesForm = () => {
           </p>
         </div>
       )}
-      
+
       <button
         type="submit"
         className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"

@@ -10,13 +10,16 @@ export interface InventoryState {
   products: IceProduct[];
 }
 
+export interface ProductionRecord {
+  id: string;
+  date: string; // Fecha completa en ISO string
+  productId: string;
+  productName: string;
+  quantity: number;
+  timestamp: number; // Para ordenamiento
+}
+
 /*
-  export interface ProductionRecord {
-    id: string;
-    date: string;
-    productId: string;
-    quantity: number;
-  }
   
   export interface SaleRecord {
     id: string;
