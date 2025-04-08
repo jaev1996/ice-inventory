@@ -1,0 +1,47 @@
+{
+    "sales": [
+        {
+            "id": "1",
+            "date": "2023-06-01T10:30:00Z",
+            "clientId": "1",
+            "clientName": "Restaurante El Buen Sabor",
+            "products": [
+                {
+                    "productId": "3",
+                    "productName": "Bolsa de Hielo Grande",
+                    "quantity": 5,
+                    "unitPrice": 20.00
+                }
+            ],
+            "total": 100.00,
+            "paymentMethod": "credit",
+            "paidAmount": 0.00,
+            "status": "completed"
+        },
+        {
+            "id": "2",
+            "date": "2023-06-02T11:15:00Z",
+            "clientId": null,
+            "clientName": "Mostrador",
+            "products": [
+                {
+                    "productId": "1",
+                    "productName": "Bolsa de Hielo Pequeña",
+                    "quantity": 3,
+                    "unitPrice": 10.00
+                },
+                {
+                    "productId": "2",
+                    "productName": "Bolsa de Hielo Mediana",
+                    "quantity": 2,
+                    "unitPrice": 15.00
+                }
+            ],
+            "total": 60.00,
+            "paymentMethod": "cash",
+            "paidAmount": 70.00,
+            "change": 10.00,
+            "status": "completed"
+        }
+    ]
+}

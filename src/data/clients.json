@@ -1,0 +1,44 @@
+{
+    "clients": [
+        {
+            "id": "1",
+            "identifier": "V-12345678",
+            "name": "Restaurante El Buen Sabor",
+            "debt": 150.00,
+            "createdAt": "2023-01-15T08:30:00Z",
+            "updatedAt": "2023-06-20T14:25:00Z"
+        },
+        {
+            "id": "2",
+            "identifier": "J-987654321",
+            "name": "Cafetería Dulce Tentación",
+            "debt": 0.00,
+            "createdAt": "2023-02-10T10:15:00Z",
+            "updatedAt": "2023-05-05T09:40:00Z"
+        },
+        {
+            "id": "3",
+            "identifier": "V-87654321",
+            "name": "Bar La Esquina",
+            "debt": 320.50,
+            "createdAt": "2023-03-05T13:20:00Z",
+            "updatedAt": "2023-06-18T16:10:00Z"
+        },
+        {
+            "id": "4",
+            "identifier": "J-123456789",
+            "name": "Heladería Frío Polar",
+            "debt": 75.25,
+            "createdAt": "2023-04-20T11:00:00Z",
+            "updatedAt": "2023-06-15T12:30:00Z"
+        },
+        {
+            "id": "5",
+            "identifier": "V-23456789",
+            "name": "Carnicería El Carnicero",
+            "debt": 0.00,
+            "createdAt": "2023-05-12T09:45:00Z",
+            "updatedAt": "2023-06-10T10:20:00Z"
+        }
+    ]
+}
